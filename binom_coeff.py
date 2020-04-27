@@ -3,17 +3,22 @@ import time
 
 
 def main():
+    # Note on runtime:
+    # When n and k are close together and both small (<10),
+    #   the recursive stack is not huge so recursion seems to win when it comes to runtime
+    # However, as the test cases show, once n and k start increasing beyond 10,
+    #   a DP implementation starts becoming exponentially faster than simple recursion.
     test_values = [(0, 0), (0, 10), (13, 0),  # edge cases
                    (3, 2), (7, 4), (10, 8),  # regular cases
                    (4, 9), (5, 10),  # k > n cases
                    (15, 10), (20, 10), (25, 10),   # as n increases
                    (30, 10), (30, 15), (30, 20)]  # as k increases
-
     for t in test_values:
         tic = time.perf_counter()
         res = binomial_simple(t[0], t[1])
         toc = time.perf_counter()
         print('Simple Recursion')
+        print('-----------------------')
         print(t[0], ' choose ', t[1], ' = ', res)
         r = toc-tic
         print('Runtime: ', r)
@@ -22,7 +27,8 @@ def main():
         res_dp = binomial_dp(t[0], t[1])
         toc_dp = time.perf_counter()
         print('Dynamic Programming')
-        print(t[0], ' choose ', t[1], ' is ', res_dp)
+        print('-----------------------')
+        print(t[0], ' choose ', t[1], ' = ', res_dp)
         rdp = toc_dp - tic_dp
         print('Runtime: ', rdp)
         speed = r/rdp
@@ -36,13 +42,19 @@ def main():
 def binomial_simple(n,k):
     if k == 0 or k == n:
         return 1
-    if k == 0 or n == 0 or k > n:
+    if n == 0 or k > n:
         return 0
     else:
         return binomial_simple(n-1, k-1) + binomial_simple(n-1, k)
 
 
 def binomial_dp(n, k):
+    # check for base cases
+    if k == 0 or k == n:
+        return 1
+    if n == 0 or k > n:
+        return 0
+
     cvals = np.zeros((n+1, k+1), dtype=int)  # DP table of values for (n choose k) - n rows, k columns
 
     # DP table leftmost column initialization
