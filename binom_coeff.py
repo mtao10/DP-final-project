@@ -1,5 +1,6 @@
 import numpy as np
 import time
+import math
 
 
 def main():
@@ -30,6 +31,7 @@ def main():
         print('-----------------------')
         print(t[0], ' choose ', t[1], ' = ', res_dp)
         rdp = toc_dp - tic_dp
+        print('Expected Answer: ', nCr(t[0], t[1]))
         print('Runtime: ', rdp)
         speed = r/rdp
         if speed > 1:
@@ -68,6 +70,16 @@ def binomial_dp(n, k):
 
     # desired binomial coefficient is in right-most bottom-most table entry
     return cvals[n][k]
+
+
+def nCr(n,k):
+    # helper function to compute (n choose k)
+    f = math.factorial
+    try:
+        res = f(n) / f(k) / f(n-k)
+    except ValueError:
+        res = 0
+    return res
 
 
 if __name__ == "__main__":

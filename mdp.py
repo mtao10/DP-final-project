@@ -1,5 +1,7 @@
 import numpy as np
 
+# The MDP problem is a stochastic shortest path problem
+
 
 def main():
     # Example: Machine Maintenance Problem
@@ -13,6 +15,7 @@ def main():
     #        Replacement Cost = $150
 
     # transitions[state][action] = (transition probability, result state)
+    # probabilities are input data to problem
     transitions = {'B': {'R': [(0.4, 'B'), (0.6, 'W')],
                          'P': [(0, 'B'), (1, 'W')]},
                    'W': {'N': [(0.7, 'B'), (0.3, 'W')],
@@ -23,12 +26,12 @@ def main():
                'W': {'N': 30, 'M': 40}}
 
     machine = MDP(transitions, rewards)
-    letter_sts = machine.convert_state_numeric()
     planning_horizon = 3
     exp_profit, opt_policy = optimality_eq(machine, planning_horizon)
 
     print('RESULTS')
     print('------------------------------------------------')
+    letter_sts = machine.convert_state_numeric()
     for p in range(0, len(exp_profit)):
         ste = letter_sts[p]
         print('If we start in state', ste, 'then the expected profit is: $', exp_profit[p])
@@ -39,12 +42,14 @@ def main():
 
 
 class MDP:
+    # Markov Decision Process class 
     def __init__(self, transitions, rewards):
         self.states = transitions.keys()
         self.transitions = transitions
         self.rewards = rewards
 
     def convert_state_numeric(self):
+        # map state letters to numbers
         x = 0
         let2num = {}
         for s in self.states:
@@ -53,12 +58,15 @@ class MDP:
         return let2num
 
     def get_actions(self, state):
+        # get possible actions at given state
         return self.transitions[state].keys()
 
     def get_reward(self, state, action):
+        # get reward for taking given action at given state
         return self.rewards[state][action]
 
     def get_possible_results(self, state, action):
+        # get possible result states from taking given action at given state
         return self.transitions[state][action]
 
 
